@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+}
+
+group = 'me.julie'
+version = '1.0-SNAPSHOT'
+
+//noinspection GroovyAssignabilityCheck
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url = 'https://oss.sonatype.org/content/repositories/central' }
+    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+}
+
+dependencies {
+    compileOnly 'org.jetbrains:annotations:22.0.0'
+    compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+}
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    from(sourceSets.main.resources.srcDirs) {
+        expand 'version': version
+    }
+}
+
+task removeBuildJars() {
+    new File('build/libs').deleteDir()
+}
+
+final server = '1.16'
+
+task copyFile(type: Copy) {
+    if (!new File("../../TestServers/${server}/plugins/").exists()) {
+        return
+    }
+    new File("../../TestServers/${server}/plugins/${project.name}-${project.version}-all.jar").delete()
+    from("build/libs/${project.name}-${project.version}-all.jar")
+    into("../../TestServers/${server}/plugins")
+    include("*.jar")
+}

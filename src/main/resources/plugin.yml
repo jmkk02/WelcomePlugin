@@ -1,0 +1,11 @@
+name: WelcomePlugin
+main: me.julie.helloplugin.WelcomePlugin
+version: ${version}
+author: julie
+description: Welcome Commands
+
+commands:
+  hello:
+    description: Hello Command
+  bye:
+    description: Bye Command
